@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Class UNO</title>
+<style>
+:root{--bg:#f5f0e6;--fg:#1d1b2e;--pn:#fff;--mut:#6b6880;--felt:#23906b;--R:#e53935;--G:#2e9e4f;--B:#1e6fd9;--Y:#f2b300;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14131f;--fg:#f2f0ff;--pn:#232137;--mut:#a29fc0;--felt:#155a43}}
+:root[data-theme="dark"]{--bg:#14131f;--fg:#f2f0ff;--pn:#232137;--mut:#a29fc0;--felt:#155a43}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 "Trebuchet MS",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:14px}
+h1{font-family:Georgia,serif;font-size:2.2rem;margin:.2em 0;letter-spacing:1px}
+h1 b{color:var(--R)}h1 i{color:var(--Y)}h1 u{color:var(--G);text-decoration:none}h1 s{color:var(--B);text-decoration:none}
+.panel{background:var(--pn);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #0002}
+input,select{font:inherit;padding:10px;border-radius:10px;border:2px solid #8884;background:var(--bg);color:var(--fg);width:100%;margin:4px 0}
+button{font:inherit;font-weight:700;padding:10px 16px;border:0;border-radius:12px;background:var(--B);color:#fff;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}button.alt{background:var(--G)}button.red{background:var(--R)}button.gray{background:#8886}
+button:not(:disabled){transition:transform .12s,filter .12s}button:not(:disabled):hover{filter:brightness(1.08);transform:translateY(-1px)}button:not(:disabled):active{transform:scale(.97)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--Y);outline-offset:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.mut{color:var(--mut);font-size:.9rem}.hide{display:none!important}
+.code{font:700 2.6rem/1 monospace;letter-spacing:8px;color:var(--Y);background:#0003;padding:10px 16px;border-radius:12px;display:inline-block}
+.pl{display:inline-block;background:var(--bg);border-radius:20px;padding:6px 14px;margin:4px}
+.table{background:radial-gradient(circle,var(--felt),#0006 220%),var(--felt);border-radius:22px;padding:14px;color:#fff}
+.opps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.opp{background:#0004;border-radius:14px;padding:8px 12px;text-align:center;min-width:90px;border:3px solid transparent}
+.opp.on{border-color:var(--Y);animation:pulse 1s infinite}.opp .n{font-size:1.4rem;font-weight:800}
+@keyframes pulse{50%{box-shadow:0 0 14px var(--Y)}}
+.mid{display:flex;gap:22px;justify-content:center;align-items:center;margin:16px 0}
+.card{width:58px;height:86px;border-radius:9px;border:3px solid #fff;color:#fff;font:800 1.5rem/1 Georgia,serif;display:flex;align-items:center;justify-content:center;position:relative;padding:0;flex:none;box-shadow:0 2px 6px #0005}
+.card::before{content:"";position:absolute;inset:14% 8%;background:#fff3;border-radius:50%;transform:rotate(-24deg)}
+.card span{position:relative;text-shadow:0 2px 3px #0008}
+.cR{background:var(--R)}.cG{background:var(--G)}.cB{background:var(--B)}.cY{background:var(--Y)}.cW{background:conic-gradient(var(--R) 0 25%,var(--B) 0 50%,var(--G) 0 75%,var(--Y) 0)}
+.back{background:#111;border-color:#fff}.back span{color:var(--R);font-size:1rem}
+.big{width:76px;height:112px;font-size:2rem}
+.hand{display:flex;gap:6px;overflow-x:auto;padding:14px 4px 8px;min-height:116px}
+.hand .card{transition:transform .15s}.hand .card.ok{transform:translateY(-12px);box-shadow:0 0 0 3px var(--Y),0 4px 10px #0007}
+.hand .card:not(.ok){filter:brightness(.6)}
+.hand .card:not(:disabled){cursor:pointer}.hand .card:disabled{cursor:not-allowed}
+.dot{width:26px;height:26px;border-radius:50%;display:inline-block;vertical-align:middle;border:3px solid #fff}
+.msg{text-align:center;min-height:1.5em;font-weight:700}
+.ov{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:9;padding:20px}
+.ov .panel{text-align:center;max-width:380px}.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pick button{height:64px}
+.shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pop{animation:pop .35s}@keyframes pop{from{transform:scale(.4) rotate(-20deg);opacity:0}}
+@media(max-width:560px){main{padding:12px}h1{font-size:1.8rem}.panel{padding:13px}.row>*{min-width:calc(50% - 6px)}.table{padding:12px}.mid{gap:14px}.big{width:66px;height:98px}.hand{gap:8px;min-height:110px}.hand .card{width:54px;height:80px}.code{font-size:2.2rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style></head><body><main>
+<h1><b>C</b><i>L</i><u>A</u><s>S</s><b>S</b> UNO 🎴</h1>
+<div class="mut">Play with friends in a room or take on up to 3 bots. Works on phones, tablets, and computers.</div>
+<details class="panel"><summary><b>How to play and invite friends</b></summary><p>For remote games, put this HTML page on a public HTTPS website and share that website link with your friends. One person creates a room and shares its 5-letter code; friends open the same website, enter the code, and join. Keep the host's page open for the whole game. Everyone needs internet access.</p><p>Match the discard pile by colour or number. Tap the draw pile if you cannot play, then use your card or pass. Action cards skip, reverse, or make the next player draw. Call UNO when you have one card left!</p></details>
+
+<section id="home">
+ <div class="panel"><label>Your nickname</label><input id="nick" maxlength="14" placeholder="e.g. Aman">
+  <div id="note" class="mut">Online rooms need internet. Create a room and share its 5-letter code with friends anywhere.</div></div>
+ <div class="panel row">
+  <div><h3>🏫 Create a room</h3><button class="alt" id="bCreate" style="width:100%">Create room</button></div>
+  <div><h3>🔑 Join with code</h3><input id="jcode" maxlength="5" placeholder="CODE" style="text-transform:uppercase;letter-spacing:4px"><button id="bJoin" style="width:100%">Join</button></div>
+ </div>
+ <div class="panel"><h3>🤖 Nobody around? Play offline vs bots</h3>
+  <div class="row"><select id="nb"><option>1</option><option selected>2</option><option>3</option></select><button class="red" id="bSolo">Start vs bots</button></div></div>
+ <div id="err" class="msg" style="color:var(--R)"></div>
+</section>
+
+<section id="lobby" class="hide">
+ <div class="panel" style="text-align:center"><div class="mut">Room code – share it with friends anywhere</div><div class="code" id="rcode"></div>
+  <div id="plist" style="margin:12px 0"></div>
+  <button class="gray" id="bCopy" type="button">📋 Copy room code</button><div id="copymsg" class="mut" aria-live="polite"></div>
+  <div class="row" id="hostbar"><button class="gray" id="bBot">+ Add bot</button><button class="gray" id="bRm">– Remove bot</button><button class="alt" id="bStart">Start game</button></div>
+  <div class="mut" id="wait"></div><div id="roomhint" class="mut">Keep this page open while friends join. Everyone needs internet.</div><button class="gray" onclick="leave()" style="margin-top:10px">Leave</button></div>
+</section>
+
+<section id="game" class="hide">
+ <div class="table">
+  <div class="opps" id="opps"></div>
+  <div class="mid"><button id="pile" type="button" class="card back big" title="Draw a card" aria-label="Draw a card"><span>UNO</span></button><div id="top"></div><div id="col" class="mut" style="color:#fff"></div></div>
+  <div class="msg" id="gmsg"></div>
+ </div>
+ <div class="row" style="margin-top:8px"><button id="bUno" class="red hide">📣 UNO!</button><button id="bPass" class="gray hide">Pass turn</button><button class="gray" onclick="leave()">Leave</button></div>
+ <div class="mut" id="turnl" style="margin-top:8px"></div>
+ <div class="hand" id="hand"></div>
+</section>
+<div id="ov" class="ov hide"></div>
+</main>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COLS=['R','G','B','Y'],CN={R:'Red',G:'Green',B:'Blue',Y:'Yellow'},BN=['Professor Bot','Chalk Bot','Eraser Bot'];
+let S=null,peer=null,hostConn=null,connections=new Map(),online=false,roomHost=false,myId='me',uno=false,botT=null;
+const rnd=n=>crypto.getRandomValues(new Uint32Array(1))[0]%n;
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+/* ---------- UNO rules engine (pure) ---------- */
+function mkDeck(){const d=[];let n=0;const add=(c,v)=>d.push({c,v,id:n++});
+ COLS.forEach(c=>{add(c,'0');for(let i=1;i<10;i++){add(c,''+i);add(c,''+i)}['S','R','D'].forEach(v=>{add(c,v);add(c,v)})});
+ for(let i=0;i<4;i++){add('W','W');add('W','F')}return d}
+const cp=o=>JSON.parse(JSON.stringify(o)),discardTop=s=>s.discard[s.discard.length-1];
+const step=(s,k)=>{const n=s.players.length;return (((s.turn+s.dir*k)%n)+n)%n};
+function give(s,id,n){for(let i=0;i<n;i++){if(!s.deck.length){const t=s.discard.pop();s.deck=shuf(s.discard);s.discard=[t]}
+ if(!s.deck.length)break;s.hands[id].push(s.deck.pop())}}
+function legal(s,c,h){if(c.v==='F')return !h.some(x=>x.c===s.color); /* +4 only when no card of current colour */
+ if(c.c==='W')return true;return s.color===null||c.c===s.color||c.v===discardTop(s).v}
+function deal(b){const s=cp(b),d=shuf(mkDeck());s.hands={};s.players.forEach(p=>s.hands[p.id]=d.splice(0,7));
+ let t=d.pop();while(t.v==='F'){d.unshift(t);shuf(d);t=d.pop()}
+ Object.assign(s,{deck:d,discard:[t],color:t.c==='W'?null:t.c,turn:0,dir:1,status:'play',drew:null,winner:null,msg:'Game on! First card: '+(t.c==='W'?'Wild (first player may play anything)':'')});
+ if(t.v==='S'){s.turn=step(s,1);s.msg='Starting Skip – first player loses a turn'}
+ if(t.v==='R'){if(s.players.length==2)s.turn=step(s,1);else s.dir=-1;s.msg='Starting Reverse'}
+ if(t.v==='D'){give(s,s.players[0].id,2);s.turn=step(s,1);s.msg='Starting Draw 2 – first player draws 2 and skips'}
+ return s}
+function play(b,pid,cid,col,saidUno){const s=cp(b);if(s.status!=='play'||s.players[s.turn].id!==pid)return null;
+ const h=s.hands[pid],i=h.findIndex(c=>c.id===cid);if(i<0)return null;const c=h[i];
+ if(s.drew!==null&&s.drew!==cid)return null;if(!legal(s,c,h))return null;
+ if(c.c==='W'&&!COLS.includes(col))return null;
+ h.splice(i,1);s.discard.push(c);s.color=c.c==='W'?col:c.c;s.drew=null;
+ const nm=s.players[s.turn].name;s.msg=nm+' played';
+ if(!h.length){s.status='over';s.winner=pid;s.msg=nm+' wins! 🎉';return s}
+ if(h.length===1){if(saidUno)s.msg+=' – UNO! 📣';else{give(s,pid,2);s.msg+=' – forgot UNO, +2 penalty!'}}
+ const nx=s.players[step(s,1)].id,n2=s.players.length===2;
+ if(c.v==='S'){s.turn=step(s,2);s.msg+=' Skip'}
+ else if(c.v==='R'){if(n2)s.turn=step(s,2);else{s.dir*=-1;s.turn=step(s,1)}s.msg+=' Reverse'}
+ else if(c.v==='D'){give(s,nx,2);s.turn=step(s,2);s.msg+=' Draw 2'}
+ else if(c.v==='F'){give(s,nx,4);s.turn=step(s,2);s.msg+=' Wild +4 → '+CN[col]}
+ else{s.turn=step(s,1);if(c.v==='W')s.msg+=' Wild → '+CN[col]}
+ return s}
+function draw(b,pid){const s=cp(b);if(s.status!=='play'||s.players[s.turn].id!==pid||s.drew!==null)return null;
+ give(s,pid,1);const h=s.hands[pid],c=h[h.length-1],nm=s.players[s.turn].name;
+ if(c&&legal(s,c,h)){s.drew=c.id;s.msg=nm+' drew a card'}else{s.turn=step(s,1);s.msg=nm+' drew and passed'}return s}
+function pass(b,pid){const s=cp(b);if(s.status!=='play'||s.players[s.turn].id!==pid||s.drew===null)return null;
+ s.drew=null;s.msg=s.players[s.turn].name+' kept the card';s.turn=step(s,1);return s}
+function botMove(s){const p=s.players[s.turn],h=s.hands[p.id];
+ const ok=h.filter(c=>legal(s,c,h)&&(s.drew===null||c.id===s.drew));
+ if(ok.length){const sc=c=>c.v==='F'?0:c.v==='W'?1:'SRD'.includes(c.v)?4:3;ok.sort((a,b)=>sc(b)-sc(a));const c=ok[0];
+  const cnt={R:0,G:0,B:0,Y:0};h.forEach(x=>{if(x.id!==c.id&&x.c!=='W')cnt[x.c]++});
+  const col=COLS.slice().sort((a,b)=>cnt[b]-cnt[a]||rnd(2)-.5)[0];return play(s,p.id,c.id,col,true)}
+ return s.drew===null?draw(s,p.id):pass(s,p.id)}
+/* ---------- networking ---------- */
+function commit(ns){if(!ns){const e=$('#hand');e.classList.add('shake');setTimeout(()=>e.classList.remove('shake'),300);return}
+ if(online&&!roomHost)return;S=ns;render();if(online)broadcastState()}
+function broadcastState(){const message={type:'state',state:S};for(const conn of connections.values())if(conn.open)conn.send(message)}
+function runAction(action,pid=myId){
+ if(!S)return null;
+ if(action.type==='play')return play(S,pid,action.cardId,action.color,action.saidUno);
+ if(action.type==='draw')return draw(S,pid);
+ if(action.type==='pass')return pass(S,pid);
+ if(pid!==myId||!roomHost)return null;
+ if(action.type==='start'&&S.status==='lobby'&&S.players.length>=2)return deal(S);
+ if(action.type==='addBot'&&S.status==='lobby'&&S.players.filter(p=>p.bot).length<3&&S.players.length<6){
+  const n=S.players.filter(p=>p.bot).length;return {...S,players:[...S.players,{id:'bot'+n,name:BN[n],bot:1}]}}
+ if(action.type==='removeBot'&&S.status==='lobby'){
+  const i=S.players.map(p=>p.bot).lastIndexOf(1);if(i<0)return null;const players=S.players.slice();players.splice(i,1);return {...S,players}}
+ if(action.type==='again'&&S.status==='over'){
+  const s=cp(S);['hands','deck','discard','color','turn','dir','drew','winner','msg'].forEach(k=>delete s[k]);s.status='lobby';return s}
+ return null
+}
+function act(action){
+ if(online&&!roomHost){if(hostConn&&hostConn.open)hostConn.send({type:'action',action});else showNetworkError('Not connected to the room host.');return}
+ commit(runAction(action))
+}
+function showNetworkError(message){
+ $('#err').textContent=message;
+ if(S){$('#roomhint').textContent=message;$('#gmsg').textContent=message}
+}
+function closePeer(){
+ for(const conn of connections.values())conn.close();connections.clear();
+ if(hostConn){hostConn.close();hostConn=null}
+ if(peer){peer.destroy();peer=null}
+}
+function onHostConnection(conn){
+ connections.set(conn.peer,conn);
+ conn.on('data',message=>{
+  if(!message||typeof message!=='object')return;
+  if(message.type==='join'){
+   const existing=S.players.some(p=>p.id===conn.peer);
+   if(!existing&&(S.status!=='lobby'||S.players.length>=6)){conn.send({type:'rejected',reason:S.status!=='lobby'?'This game has already started.':'This room is full.'});conn.close();return}
+   if(!existing)S={...S,players:[...S.players,{id:conn.peer,name:String(message.name||'Player').trim().slice(0,14)||'Player'}]};
+   conn.send({type:'welcome',id:conn.peer,state:S});render();broadcastState();return
+  }
+  if(message.type==='action'&&S.players.some(p=>p.id===conn.peer)){
+   const action=message.action;if(!action||typeof action!=='object')return;
+   commit(runAction(action,conn.peer))
+  }
+ });
+ conn.on('close',()=>{
+  connections.delete(conn.peer);
+  if(S&&S.status==='lobby'){
+   S={...S,players:S.players.filter(p=>p.id!==conn.peer)};render();broadcastState()
+  }else if(S&&S.status==='play'){
+   const removedIndex=S.players.findIndex(p=>p.id===conn.peer);
+   if(removedIndex<0)return;
+   const removed=S.players[removedIndex],players=S.players.filter(p=>p.id!==conn.peer),hands={...S.hands};
+   const returned=hands[conn.peer]||[];delete hands[conn.peer];
+   let turn=S.turn;
+   if(removedIndex<turn)turn--;
+   else if(removedIndex===turn)turn=removedIndex%players.length;
+   const next={...S,players,hands,deck:shuf([...S.deck,...returned]),turn,
+    msg:removed.name+' disconnected and left the game.'};
+   if(players.length===1){next.status='over';next.winner=players[0].id;next.msg=players[0].name+' wins because the other player left.'}
+   S=next;render();broadcastState()
+  }
+ });
+ conn.on('error',e=>showNetworkError('Player connection problem: '+(e.message||e.type||'unknown error')))
+}
+function hostPeerError(e){
+ if(e.type==='unavailable-id')showNetworkError('That room code is already in use. Leave and create a new room.');
+ else showNetworkError('Online room connection failed: '+(e.message||e.type||'unknown error')+'. Check internet and try again.')
+}
+async function create(){
+ if(typeof Peer!=='function')throw new Error('Online connection library did not load. Check internet access, reload, and try again.');
+ closePeer();S=null;online=false;roomHost=false;$('#err').textContent='';
+ const code=gen(),p=new Peer('classuno-'+code.toLowerCase());peer=p;
+ try{
+  const id=await new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>reject(new Error('Online service did not respond. Please try again.')),15000);
+   p.once('open',value=>{clearTimeout(timer);resolve(value)});
+   p.once('error',e=>{clearTimeout(timer);reject(new Error(e.message||e.type||'Could not create room'))})
+  });
+  myId=id;roomHost=true;online=true;S={code,host:myId,players:[{id:myId,name:nick()}],status:'lobby'};
+  p.on('connection',onHostConnection);p.on('error',hostPeerError);render()
+ }catch(e){p.destroy();peer=null;throw e}
+}
+async function join(){
+ if(typeof Peer!=='function')throw new Error('Online connection library did not load. Check internet access, reload, and try again.');
+ const code=$('#jcode').value.trim().toUpperCase();
+ if(!/^[A-Z0-9]{5}$/.test(code))throw new Error('Enter the 5-letter room code shared by your friend.');
+ closePeer();S=null;online=false;roomHost=false;$('#err').textContent='';
+ const p=new Peer();peer=p;
+ try{
+  await new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>reject(new Error('Could not reach the online service. Check internet and try again.')),15000);
+   p.once('open',()=>{clearTimeout(timer);resolve()});
+   p.once('error',e=>{clearTimeout(timer);reject(new Error(e.message||e.type||'Could not connect'))})
+  });
+  hostConn=p.connect('classuno-'+code.toLowerCase(),{reliable:true});
+  await new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>reject(new Error('No room found for that code. Check the code and make sure your friend has the room open.')),15000);
+   hostConn.on('open',()=>hostConn.send({type:'join',name:nick()}));
+   hostConn.on('data',message=>{
+    if(!message||typeof message!=='object')return;
+    if(message.type==='rejected'){clearTimeout(timer);reject(new Error(message.reason));return}
+    if(message.type==='state'){S=message.state;render();return}
+    if(message.type!=='welcome')return;
+    clearTimeout(timer);myId=message.id;online=true;roomHost=false;S=message.state;render();resolve()
+   });
+   hostConn.on('error',e=>{clearTimeout(timer);reject(new Error('Could not connect to that room: '+(e.message||e.type||'connection error')))});
+   hostConn.on('close',()=>{
+    clearTimeout(timer);reject(new Error('The room host disconnected. Ask them to create a new room.'));
+    if(S){S=null;online=false;render();showNetworkError('The room host disconnected. Ask them to create a new room.')}
+   })
+  });
+  p.on('error',e=>showNetworkError('Online connection problem: '+(e.message||e.type||'unknown error')))
+ }catch(e){closePeer();online=false;roomHost=false;S=null;render();throw e}
+}
+const nick=()=>($('#nick').value.trim()||'Player').slice(0,14);
+const gen=()=>Array.from({length:5},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[rnd(32)]).join('');
+function solo(){closePeer();online=false;roomHost=false;uno=false;$('#err').textContent='';const n=+$('#nb').value;S=deal({code:'SOLO',host:myId,players:[{id:myId,name:nick()},...BN.slice(0,n).map((x,i)=>({id:'bot'+i,name:x,bot:1}))]});render()}
+function leave(){closePeer();S=null;online=false;roomHost=false;uno=false;clearTimeout(botT);botT=null;render()}
+/* ---------- UI ---------- */
+const L=v=>({S:'⊘',R:'⇄',D:'+2',W:'✦',F:'+4'}[v]||v);
+const cardEl=(c,cls='',interactive=false)=>interactive
+ ?`<button type="button" class="card c${c.c} ${cls}" data-id="${c.id}" aria-label="${CN[c.c]||'Wild'} ${c.v==='S'?'Skip':c.v==='R'?'Reverse':c.v==='D'?'Draw two':c.v==='F'?'Wild draw four':c.v==='W'?'Wild':c.v}"><span>${L(c.v)}</span></button>`
+ :`<div class="card c${c.c} ${cls}" aria-label="${CN[c.c]||'Wild'} ${L(c.v)}"><span>${L(c.v)}</span></div>`;
+function render(){const home=!S,lobby=S&&S.status==='lobby';
+ $('#home').classList.toggle('hide',!home);$('#lobby').classList.toggle('hide',!lobby);$('#game').classList.toggle('hide',home||lobby);
+ if(home){$('#ov').classList.add('hide');return}
+ const host=S.host===myId;
+ if(lobby){$('#ov').classList.add('hide');$('#rcode').textContent=S.code;$('#plist').innerHTML=S.players.map(p=>`<span class="pl">${p.bot?'🤖':'🧑‍🎓'} ${esc(p.name)}${p.id===S.host?' ⭐':''}</span>`).join('');
+  $('#hostbar').classList.toggle('hide',!host);const nb=S.players.filter(p=>p.bot).length;
+  $('#bBot').disabled=nb>=3||S.players.length>=6;$('#bRm').disabled=!nb;$('#bStart').disabled=S.players.length<2;
+  $('#wait').textContent=host?'Share the code with friends; start once at least 2 players have joined.':'Waiting for the host to start…';return}
+ const cur=S.players[S.turn],mine=cur.id===myId,h=S.hands[myId]||[];
+ $('#opps').innerHTML=S.players.filter(p=>p.id!==myId).map(p=>`<div class="opp ${p.id===cur.id&&S.status==='play'?'on':''}">${p.bot?'🤖':'🧑‍🎓'} ${esc(p.name)}<div class="n">🂠 ${S.hands[p.id].length}</div>${S.hands[p.id].length===1?'<b>UNO!</b>':''}</div>`).join('');
+ $('#top').innerHTML=cardEl(discardTop(S),'big pop');$('#col').innerHTML=S.color?`<span class="dot c${S.color}"></span> ${CN[S.color]}<br>${S.dir>0?'↻':'↺'}`:'Any colour';
+ $('#gmsg').textContent=S.msg||'';
+ $('#turnl').textContent=S.status==='over'?'':mine?(S.drew!==null?'You drew a playable card – play it or pass.':'Your turn! Play a glowing card or tap the pile to draw.'):`Waiting for ${cur.name}…`;
+ const act=mine&&S.status==='play';
+ $('#hand').innerHTML=h.slice().sort((a,b)=>a.c.localeCompare(b.c)||a.v.localeCompare(b.v)).map(c=>{
+  const playable=act&&legal(S,c,h)&&(S.drew===null||S.drew===c.id);
+  return cardEl(c,playable?'ok':'',true).replace('<button type="button"','<button type="button"'+(playable?'':' disabled'));
+ }).join('');
+ $('#bUno').classList.toggle('hide',!(act&&h.length===2));$('#bUno').textContent=uno?'✅ UNO called':'📣 UNO!';
+ $('#bPass').classList.toggle('hide',!(act&&S.drew!==null));
+ if(S.status==='over'){const w=S.players.find(p=>p.id===S.winner);
+  $('#ov').innerHTML=`<div class="panel"><h2>🏆 ${esc(w.name)} wins!</h2><p>${w.id===myId?'Brilliant! You emptied your hand.':'Better luck next round.'}</p>${host?'<button class="alt" onclick="again()">Play again</button>':'<div class="mut">Host can start a rematch.</div>'}<br><br><button class="gray" onclick="leave()">Leave</button></div>`;$('#ov').classList.remove('hide')}
+ else if($('#ov').dataset.w!=='1')$('#ov').classList.add('hide');
+ if(S.status==='play'&&cur.bot&&(!online||host)&&!botT)botT=setTimeout(()=>{botT=null;if(S&&S.status==='play'&&S.players[S.turn].bot)commit(botMove(S))},1100)}
+function again(){const s=cp(S);['hands','deck','discard','color','turn','dir','drew','winner','msg'].forEach(k=>delete s[k]);s.status='lobby';commit(s)}
+function pickColor(cb){const o=$('#ov');o.dataset.w='1';o.innerHTML='<div class="panel"><h3>Choose a colour</h3><div class="pick">'+COLS.map(c=>`<button class="c${c}" data-c="${c}" style="background:var(--${c})">${CN[c]}</button>`).join('')+'</div></div>';o.classList.remove('hide');
+ o.onclick=e=>{const c=e.target.dataset.c;if(!c)return;o.dataset.w='0';o.classList.add('hide');o.onclick=null;cb(c)}}
+/* ---------- events ---------- */
+$('#hand').onclick=e=>{const b=e.target.closest('.card');if(!b||!S)return;const id=+b.dataset.id,c=S.hands[myId].find(x=>x.id===id);if(!c)return;
+ const go=col=>{act({type:'play',cardId:id,color:col,saidUno:uno});uno=false};
+ if(c.c==='W'&&S.players[S.turn].id===myId&&legal(S,c,S.hands[myId])&&(S.drew===null||S.drew===id))pickColor(go);else go(null)};
+$('#pile').onclick=()=>S&&act({type:'draw'});$('#bPass').onclick=()=>act({type:'pass'});
+$('#bUno').onclick=()=>{uno=!uno;render()};
+$('#bCreate').onclick=()=>create().catch(e=>$('#err').textContent=e.message);$('#bJoin').onclick=()=>join().catch(e=>$('#err').textContent=e.message);
+$('#bSolo').onclick=solo;
+$('#bCopy').onclick=async()=>{const msg=$('#copymsg');try{await navigator.clipboard.writeText($('#rcode').textContent);msg.textContent='Room code copied! Share it with your friends.'}catch(e){msg.textContent='Copy unavailable here. Select and share the room code above: '+$('#rcode').textContent}};
+$('#bBot').onclick=()=>act({type:'addBot'});
+$('#bRm').onclick=()=>act({type:'removeBot'});
+$('#bStart').onclick=()=>act({type:'start'});
+if(typeof Peer!=='function'){$('#note').textContent='Online play could not load its connection library. Check your internet connection and reload; offline bots are still available.';['bCreate','bJoin'].forEach(id=>$('#'+id).disabled=true)}
+render();
+</script></body></html>
